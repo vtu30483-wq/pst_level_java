@@ -1,0 +1,217 @@
+Comparators are used to compare two objects. In this challenge, you'll create a comparator and use it to sort an array.
+
+The Player class is provided for you in your editor. It has  fields: a  String and a  integer.
+
+Given an array of  Player objects, write a comparator that sorts them in order of decreasing score; if  or more players have the same score, sort those players alphabetically by name. To do this, you must create a Checker class that implements the Comparator interface, then write an int compare(Player a, Player b) method implementing the Comparator.compare(T o1, T o2) method.
+
+Input Format
+
+Input from stdin is handled by the locked stub code in the Solution class.
+
+The first line contains an integer, , denoting the number of players.
+Each of the  subsequent lines contains a player's  and , respectively.
+
+Constraints
+
+ players can have the same name.
+Player names consist of lowercase English letters.
+Output Format
+
+You are not responsible for printing any output to stdout. The locked stub code in Solution will create a Checker object, use it to sort the Player array, and print each sorted element.
+
+5
+amy 100
+david 100
+heraldo 50
+aakansha 75
+aleksa 150
+Sample Output
+
+aleksa 150
+amy 100
+david 100
+aakansha 75
+heraldo 50
+
+import java.util.Scanner;
+import java.util.Arrays;
+import java.util.Comparator;
+
+// 1. The HackerRank provided Player Class
+class Player {
+    String name;
+    int score;
+
+    Player(String name, int score) {
+        this.name = name;
+        this.score = score;
+    }
+}
+
+// 2. Your custom implementation of the Checker Class
+class Checker implements Comparator<Player> {
+    @Override
+    public int compare(Player a, Player b) {
+        // Decreasing score order
+        if (a.score != b.score) {
+            return Integer.compare(b.score, a.score);
+        }
+        // Alphabetical name order if scores tie
+        return a.name.compareTo(b.name);
+    }
+}
+
+// 3. The official HackerRank Main Driver template
+public class Solution {
+
+    public static void main(String[] args) {
+        Scanner scan = new Scanner(System.in);
+        int n = scan.nextInt();
+
+        Player[] player = new Player[n];
+        Checker checker = new Checker();
+        
+        for (int i = 0; i < n; i++) {
+            player[i] = new Player(scan.next(), scan.nextInt());
+        }
+        scan.close();
+
+        Arrays.sort(player, checker);
+        for (int i = 0; i < player.length; i++) {
+            System.out.printf("%s %s\n", player[i].name, player[i].score);
+        }
+    }
+}
+
+
+code
+
+
+import java.util.*;
+
+public class Solution {
+
+    public static void matrixRotation(List<List<Integer>> matrix, int r) {
+
+        int m = matrix.size();
+        int n = matrix.get(0).size();
+
+        int layers = Math.min(m, n) / 2;
+
+        for (int layer = 0; layer < layers; layer++) {
+
+            List<Integer> elements = new ArrayList<>();
+
+            int top = layer;
+            int left = layer;
+            int bottom = m - 1 - layer;
+            int right = n - 1 - layer;
+
+            // Top row: left -> right
+            for (int j = left; j <= right; j++) {
+                elements.add(matrix.get(top).get(j));
+            }
+
+            // Right column: top+1 -> bottom
+            for (int i = top + 1; i <= bottom; i++) {
+                elements.add(matrix.get(i).get(right));
+            }
+
+            // Bottom row: right-1 -> left
+            for (int j = right - 1; j >= left; j--) {
+                elements.add(matrix.get(bottom).get(j));
+            }
+
+            // Left column: bottom-1 -> top+1
+            for (int i = bottom - 1; i > top; i--) {
+                elements.add(matrix.get(i).get(left));
+            }
+
+            // Number of rotations actually needed
+            int rotate = r % elements.size();
+
+            // Put rotated elements back
+            int index = rotate;
+
+            // Top row
+            for (int j = left; j <= right; j++) {
+                matrix.get(top).set(j, elements.get(index));
+                index = (index + 1) % elements.size();
+            }
+
+            // Right column
+            for (int i = top + 1; i <= bottom; i++) {
+                matrix.get(i).set(right, elements.get(index));
+                index = (index + 1) % elements.size();
+            }
+
+            // Bottom row
+            for (int j = right - 1; j >= left; j--) {
+                matrix.get(bottom).set(j, elements.get(index));
+                index = (index + 1) % elements.size();
+            }
+
+            // Left column
+            for (int i = bottom - 1; i > top; i--) {
+                matrix.get(i).set(left, elements.get(index));
+                index = (index + 1) % elements.size();
+            }
+        }
+
+        // Print result
+        for (List<Integer> row : matrix) {
+            for (int j = 0; j < row.size(); j++) {
+                System.out.print(row.get(j));
+                if (j < row.size() - 1) {
+                    System.out.print(" ");
+                }
+            }
+            System.out.println();
+        }
+    }
+
+    public static void main(String[] args) {
+
+        Scanner sc = new Scanner(System.in);
+
+        int m = sc.nextInt();
+        int n = sc.nextInt();
+        int r = sc.nextInt();
+
+        List<List<Integer>> matrix = new ArrayList<>();
+
+        for (int i = 0; i < m; i++) {
+            List<Integer> row = new ArrayList<>();
+
+            for (int j = 0; j < n; j++) {
+                row.add(sc.nextInt());
+            }
+
+            matrix.add(row);
+        }
+
+        matrixRotation(matrix, r);
+
+        sc.close();
+    }
+}
+
+
+
+output
+nput (stdin)
+4 4 1
+1 2 3 4
+5 6 7 8
+9 10 11 12
+13 14 15 16
+Your Output (stdout)
+2 3 4 8
+1 7 11 12
+5 6 10 16
+9 13 14 15
+Expected Output
+2 3 4 8
+1 7 11 12
+5 6 10 16
+9 13 14 15
